@@ -4,6 +4,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+use App\Http\Controllers\StripeController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\AccountController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,5 +31,14 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/profile', [AccountController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('profile');
+
+Route::post('/send-money', [TransactionController::class, 'store'])
+->middleware(['auth', 'verified'])->name('send-money');
+
+Route::get('/stripe-payment', [StripeController::class, 'handleGet']);
+Route::post('/stripe-payment', [StripeController::class, 'handlePost'])->name('stripe.payment');
 
 require __DIR__.'/auth.php';
